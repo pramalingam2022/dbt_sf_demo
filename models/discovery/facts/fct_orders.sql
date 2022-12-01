@@ -1,16 +1,9 @@
 
-{{config(
-    materialized="table"
-)}}
-
-with customers as (
-    select * from {{ref('stg_customers')}}
-    ),
-
-orders as (
+with orders as (
     select * from {{ref('stg_orders')}}
     ),
 
+    
 customer_orders as (
 
     select
@@ -36,7 +29,7 @@ final as (
         customer_orders.most_recent_order_date,
         coalesce(customer_orders.number_of_orders, 0) as number_of_orders
 
-    from customers
+    from {{ref('dim_customers')}} as customers
 
     left join customer_orders using (customer_id)
 
